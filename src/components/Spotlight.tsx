@@ -16,15 +16,15 @@ gsap.registerPlugin(SplitText);
 const revealed = new Set<string>();
 
 const S = strings({
-  pt: { cardOf: (name: string) => `Carta de ${name}`, close: "Fechar", special: "Especial", edit: "Editar carta", history: "Histórico de OVR", versions: "Versões", main: "Principal", version: "Versão",
+  pt: { cardOf: (name: string) => `Carta de ${name}`, close: "Fechar", guide: "Guia das Cartas", special: "Especial", edit: "Editar carta", history: "Histórico de OVR", versions: "Versões", main: "Principal", version: "Versão",
     stats: "Atributos", statNames: { MIR: "Mira", MAC: "Macro", SUP: "Suporte", MOV: "Movimentação", POL: "Pool de heróis", CON: "Consistência" } },
-  en: { cardOf: (name: string) => `${name}'s card`, close: "Close", special: "Special", edit: "Edit card", history: "OVR history", versions: "Versions", main: "Main", version: "Version",
+  en: { cardOf: (name: string) => `${name}'s card`, close: "Close", guide: "Card Guide", special: "Special", edit: "Edit card", history: "OVR history", versions: "Versions", main: "Main", version: "Version",
     stats: "Attributes", statNames: { MIR: "Aim", MAC: "Macro", SUP: "Support", MOV: "Movement", POL: "Hero pool", CON: "Consistency" } },
-  es: { cardOf: (name: string) => `Carta de ${name}`, close: "Cerrar", special: "Especial", edit: "Editar carta", history: "Historial de OVR", versions: "Versiones", main: "Principal", version: "Versión",
+  es: { cardOf: (name: string) => `Carta de ${name}`, close: "Cerrar", guide: "Guía de Cartas", special: "Especial", edit: "Editar carta", history: "Historial de OVR", versions: "Versiones", main: "Principal", version: "Versión",
     stats: "Atributos", statNames: { MIR: "Puntería", MAC: "Macro", SUP: "Apoyo", MOV: "Movimiento", POL: "Pool de héroes", CON: "Consistencia" } },
 });
 
-export function Spotlight({ playerId, onClose, onSwitch, onEdit }: { playerId: string; onClose: () => void; onSwitch: (id: string) => void; onEdit?: (id: string) => void }) {
+export function Spotlight({ playerId, onClose, onSwitch, onEdit, onGuide }: { playerId: string; onClose: () => void; onSwitch: (id: string) => void; onEdit?: (id: string) => void; onGuide?: () => void }) {
   const t = useT(S);
   const label = useLabel();
   const { teams, players, settings } = useData();
@@ -153,6 +153,19 @@ export function Spotlight({ playerId, onClose, onSwitch, onEdit }: { playerId: s
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Botão do Guia das Cartas */}
+          {onGuide && (
+            <div className="flex w-full justify-end pt-2">
+              <button
+                type="button"
+                onClick={onGuide}
+                className={`${pill(false)} inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 text-center transition-colors hover:border-dl-text hover:text-dl-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dl-text sm:min-h-10 sm:w-auto`}
+              >
+                {t.guide}
+              </button>
             </div>
           )}
         </div>

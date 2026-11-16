@@ -21,6 +21,7 @@ import { Profile } from "./views/Profile";
 import { easeOut } from "./lib/ui";
 import { Settings } from "./views/Settings";
 import { profileUrl } from "./lib/profile";
+import { CardGuide } from "./views/CardGuide";
 
 const REPO = "https://github.com/hagizao/deadcards";
 
@@ -32,7 +33,7 @@ function GitHubIcon() {
   );
 }
 
-type Tab = "home" | "teams" | "tierlist" | "collection" | "redeem" | "compare" | "editor" | "privacy" | "terms" | "feedback" | "profile" | "settings";
+type Tab = "home" | "teams" | "tierlist" | "collection" | "redeem" | "compare" | "editor" | "privacy" | "terms" | "feedback" | "profile" | "settings" | "cardguide";
 const TABS = ["teams", "tierlist", "collection", "compare", "redeem"] as const;
 
 const S = strings({
@@ -52,6 +53,7 @@ const S = strings({
     rmBold: "movimento reduzido",
     rmAfter: " ativado, então as animações das cartas estão desligadas. Para vê-las, desative essa opção nas configurações de acessibilidade do seu sistema.",
     rmClose: "Fechar aviso",
+    cardGuide: "Guia das Cartas",
   },
   en: {
     tabs: { teams: "Teams", tierlist: "Tier List", collection: "Collection", compare: "Compare", redeem: "Redeem", editor: "Editor" },
@@ -69,6 +71,7 @@ const S = strings({
     rmBold: "reduced motion",
     rmAfter: " turned on, so the card animations are off. To see them, turn off that option in your system's accessibility settings.",
     rmClose: "Dismiss notice",
+    cardGuide: "Card Guide",
   },
   es: {
     tabs: { teams: "Equipos", tierlist: "Tier List", collection: "Colección", compare: "Comparar", redeem: "Canjear", editor: "Editor" },
@@ -86,6 +89,7 @@ const S = strings({
     rmBold: "movimiento reducido",
     rmAfter: ", así que las animaciones de las cartas están desactivadas. Para verlas, desactiva esa opción en los ajustes de accesibilidad de tu sistema.",
     rmClose: "Cerrar aviso",
+    cardGuide: "Guía de Cartas",
   },
 });
 
@@ -257,6 +261,7 @@ function Shell() {
   const tabs = me?.admin ? [...TABS, "editor" as const] : TABS;
   const openTeam = (id: string) => { setFocusTeam(id); setTab("teams"); };
   const editCard = (id: string) => { setSpotlight(null); setEditId(id); setTab("editor"); };
+  const openCardGuide = () => {setSpotlight(null); setTab("cardguide"); };
   const openProfile = (id: string) => { setProfileId(id); setTab("profile"); };
   useEffect(() => { window.scrollTo(0, 0); }, [tab, profileId]);
   const [linkResult, setLinkResult] = useState<LinkResult>();
@@ -318,6 +323,7 @@ function Shell() {
             {tab === "editor" && me?.admin && <Editor editId={editId} onEditId={setEditId} />}
             {(tab === "privacy" || tab === "terms") && <Legal page={tab} />}
             {tab === "feedback" && <Feedback />}
+            {tab === "cardguide" && <CardGuide />}
           </motion.div>
       </main>
 
@@ -329,6 +335,7 @@ function Shell() {
           <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label={t.projectLinks}>
             <button type="button" onClick={() => setTab("feedback")} className="cursor-pointer hover:text-white">{t.feedback}</button>
             <a href={`${REPO}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer" className="hover:text-white">{t.contribute}</a>
+            <button type="button" onClick={() => setTab("cardguide")} className="cursor-pointer hover:text-white">{t.cardGuide}</button>
             <button type="button" onClick={() => setTab("privacy")} className="cursor-pointer hover:text-white">{t.privacy}</button>
             <button type="button" onClick={() => setTab("terms")} className="cursor-pointer hover:text-white">{t.terms}</button>
           </nav>
@@ -343,7 +350,7 @@ function Shell() {
       </footer>
 
       <AnimatePresence>
-        {spotlight && <Spotlight key="spotlight" playerId={spotlight} onClose={() => setSpotlight(null)} onSwitch={setSpotlight} onEdit={me?.admin ? editCard : undefined} />}
+        {spotlight && <Spotlight key="spotlight" playerId={spotlight} onClose={() => setSpotlight(null)} onSwitch={setSpotlight} onEdit={me?.admin ? editCard : undefined} onGuide={openCardGuide}/>}
       </AnimatePresence>
     </>
   );
